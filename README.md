@@ -1,64 +1,52 @@
-#Family Safety Net
+# 🛡️ Family Safety Net
 
-A personal family security and tracking system designed for consent-based monitoring, emergency awareness, and real-time visibility of connected family devices.
+Family Safety Net is a consent-based personal security and family monitoring system designed to provide real-time visibility, location tracking, and emergency awareness for connected family devices.
 
-##Overview
+## 🚀 Features
 
-Family Safety Net is a security-focused platform consisting of:
+### 📱 Android Client
+- Real-time GPS tracking
+- Background location updates
+- Firebase integration
+- Secure device communication
+- Lightweight and optimized design
 
-Android Client App – Installed on family devices
-Admin Dashboard – Used to monitor connected devices
-Firebase Backend – Handles authentication, realtime data, and storage
+### 🖥️ Admin Dashboard
+- Live device monitoring
+- Realtime location visualization
+- Connected device management
+- Map-based tracking interface
+- Firebase-powered backend support
 
-The goal of the project is to provide a centralized system for:
+### 🔒 Security Features
+- Consent-based tracking
+- Secure authentication
+- Controlled admin access
+- Realtime synchronization
 
-Real-time GPS tracking
-Device monitoring
-Emergency visibility
-Secure family connectivity
-Features
-Android Client
-Real-time location updates
-Firebase integration
-Background tracking support
-Device identification
-Secure communication with backend
-Lightweight and battery-conscious implementation
-Admin Dashboard
-Live device monitoring
-Device management panel
-Realtime location updates
-Map-based visualization
-Connected device overview
-Firebase-powered backend communication
-Security Focus
-Consent-based usage
-Secure Firebase communication
-Authentication support
-Controlled device access
-Tech Stack
-Frontend
-Android (Java/Kotlin)
-HTML/CSS/JavaScript (Dashboard)
-Backend
-Firebase Realtime Database
-Firebase Authentication
-Firebase Hosting
-Deployment
-GCP E2 Instance
-Vercel (optional frontend deployment)
-Render (optional backend deployment)
-Firebase Configuration
-{
-  "apiKey": "YOUR_API_KEY",
-  "authDomain": "YOUR_AUTH_DOMAIN",
-  "databaseURL": "YOUR_DATABASE_URL",
-  "projectId": "YOUR_PROJECT_ID",
-  "storageBucket": "YOUR_STORAGE_BUCKET",
-  "messagingSenderId": "YOUR_MESSAGING_SENDER_ID",
-  "appId": "YOUR_APP_ID"
-}
-Project Structure
+---
+
+# 🏗️ Tech Stack
+
+## Frontend
+- Android (Java/Kotlin)
+- HTML/CSS/JavaScript
+
+## Backend
+- Firebase Realtime Database
+- Firebase Authentication
+- Firebase Hosting
+
+## Deployment
+- GCP E2 Instance
+- Vercel
+- Render
+
+---
+
+# 📂 Project Structure
+
+```bash
 family-safety-net/
 │
 ├── android-client/
@@ -76,60 +64,112 @@ family-safety-net/
 │   └── firebase-functions/
 │
 └── README.md
-Installation
-Android Client
+```
+
+---
+
+# ⚙️ Installation
+
+## Clone Repository
+
+```bash
 git clone https://github.com/yourusername/family-safety-net.git
-cd android-client
+cd family-safety-net
+```
 
-Open the project in Android Studio and run:
+---
 
+## 📱 Android Client Setup
+
+Open the `android-client` folder in Android Studio.
+
+Build the project:
+
+```bash
 ./gradlew build
-Admin Dashboard
+```
+
+---
+
+## 🖥️ Admin Dashboard Setup
+
+```bash
 cd admin-dashboard
 npm install
 npm run dev
-Firebase Setup
-Create a project in Firebase
-Enable:
-Authentication
-Realtime Database
-Cloud Messaging
-Add Android app credentials
-Replace Firebase configuration values in the project
-Usage
-Install the Android client on authorized devices
-Login using configured credentials
-Open the admin dashboard
-Monitor connected devices in realtime
-Ethical Usage
+```
+
+---
+
+# 🔥 Firebase Setup
+
+1. Create a Firebase project
+2. Enable:
+   - Authentication
+   - Realtime Database
+   - Cloud Messaging
+3. Add Android app credentials
+4. Replace Firebase config values
+
+Example configuration:
+
+```json
+{
+  "apiKey": "YOUR_API_KEY",
+  "authDomain": "YOUR_AUTH_DOMAIN",
+  "databaseURL": "YOUR_DATABASE_URL",
+  "projectId": "YOUR_PROJECT_ID",
+  "storageBucket": "YOUR_STORAGE_BUCKET",
+  "messagingSenderId": "YOUR_MESSAGING_SENDER_ID",
+  "appId": "YOUR_APP_ID"
+}
+```
+
+---
+
+# 📍 Usage
+
+1. Install the Android client on authorized devices
+2. Login using configured credentials
+3. Launch the admin dashboard
+4. Monitor connected devices in realtime
+
+---
+
+# ⚠️ Ethical Usage
 
 This project is intended strictly for:
+- Family safety
+- Personal device monitoring
+- Consent-based tracking
 
-Family safety
-Personal device monitoring
-Consent-based tracking
+Do NOT use this project for:
+- Unauthorized surveillance
+- Non-consensual tracking
+- Illegal monitoring activities
 
-Do not use this project for:
+Always comply with local privacy laws and regulations.
 
-Unauthorized surveillance
-Stalking
-Non-consensual monitoring
-Illegal activities
+---
 
-Always comply with local laws and privacy regulations.
+# 🛠️ Future Improvements
 
-Future Improvements
-End-to-end encrypted communication
-SOS emergency system
-Geofencing alerts
-Battery optimization improvements
-Push notification system
-Device health monitoring
-Author
+- SOS emergency alerts
+- Geofencing
+- Push notifications
+- End-to-end encryption
+- Device health monitoring
+- Battery optimization
 
-Drash Kumar
-Offensive Security & Development
+---
 
-License
+# 👨‍💻 Author
+
+**Drash Tyagi**  
+Offensive Security Enthusiast & Developer
+
+---
+
+# 📜 License
 
 This project is licensed under the MIT License.
