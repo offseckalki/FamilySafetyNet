@@ -73,8 +73,8 @@ family-safety-net/
 ## Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/family-safety-net.git
-cd family-safety-net
+git clone https://github.com/offseckalki/FamilySafetyNet
+cd Family-Safety-Net
 ```
 
 ---
@@ -165,7 +165,7 @@ Always comply with local privacy laws and regulations.
 
 # 👨‍💻 Author
 
-**Drash Tyagi**  
+**Drash Kumar**  
 Offensive Security Enthusiast & Developer
 
 ---
