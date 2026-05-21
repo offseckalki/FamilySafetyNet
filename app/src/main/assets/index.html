@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Family Safety</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            touch-action: manipulation;
+        }
+        .app-container {
+            max-width: 400px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: opacity 0.3s ease;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #09f;
+            animation: spin 1s ease infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-800 flex items-center justify-center">
+
+<div class="app-container w-full bg-slate-50 shadow-2xl overflow-hidden relative">
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Persistent Notification Bar -->
+    <div class="bg-slate-100 p-2 border-b border-slate-200">
+        <div class="flex items-center">
+            <span class="text-lg mr-2">🛡️</span>
+            <div>
+                <p class="text-xs font-bold text-slate-700">Family Safety Active</p>
+                <p class="text-xs text-slate-500">Sharing location and device status.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Header -->
+    <header class="bg-white p-4 border-b border-slate-200">
+        <h1 class="text-xl font-bold text-slate-800 text-center">Family Safety Status</h1>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow p-6 bg-slate-50 overflow-y-auto">
+        <div class="text-center mb-8">
+            <div id="main-status-icon" class="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full mx-auto flex items-center justify-center text-5xl">
+                <span>✅</span>
+            </div>
+            <h2 id="main-status-text" class="text-2xl font-bold mt-4 text-slate-900">You are Protected</h2>
+            <p class="text-slate-500">Your device status is being shared with your family group.</p>
+            <p class="text-xs text-slate-400 mt-4">Device ID: <span id="device-id"></span></p>
+        </div>
+
+        <!-- Status List -->
+        <div class="space-y-4">
+            <div id="status-location" class="bg-white p-4 rounded-lg shadow-sm flex items-center justify-between transition-all">
+                <div class="flex items-center">
+                    <span class="text-2xl mr-4">📍</span>
+                    <div>
+                        <p class="font-semibold text-slate-800">Location</p>
+                        <p class="text-sm text-slate-500 status-text">Sharing Real-Time</p>
+                    </div>
+                </div>
+                <div class="status-indicator w-3 h-3 rounded-full bg-emerald-500"></div>
+            </div>
+
+            <div id="status-battery" class="bg-white p-4 rounded-lg shadow-sm flex items-center justify-between transition-all">
+                <div class="flex items-center">
+                    <span class="text-2xl mr-4">🔋</span>
+                    <div>
+                        <p class="font-semibold text-slate-800">Battery</p>
+                        <p class="text-sm text-slate-500 status-text">Waiting for data...</p>
+                    </div>
+                </div>
+                <div class="status-indicator w-3 h-3 rounded-full bg-emerald-500"></div>
+            </div>
+
+            <div id="status-mic" class="bg-white p-4 rounded-lg shadow-sm flex items-center justify-between transition-all">
+                <div class="flex items-center">
+                    <span class="text-2xl mr-4">🎤</span>
+                    <div>
+                        <p class="font-semibold text-slate-800">Ambient Sound</p>
+                        <p class="text-sm text-slate-500 status-text">Enabled for Emergencies</p>
+                    </div>
+                </div>
+                <div class="status-indicator w-3 h-3 rounded-full bg-emerald-500"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer / Controls -->
+    <footer class="p-4 bg-white border-t border-slate-200">
+        <div class="grid grid-cols-2 gap-4">
+            <button id="pause-btn" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-3 px-4 rounded-lg transition-colors">
+                Pause Sharing
+            </button>
+            <button id="alert-btn" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg transition-colors">
+                Send Alert
+            </button>
+        </div>
+    </footer>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCjprGyI8x8ECri-CDlgKFoER3hTiLmeY0",
+      authDomain: "tracking-app-e3353.firebaseapp.com",
+      projectId: "tracking-app-e3353",
+      storageBucket: "tracking-app-e3353.appspot.com",
+      messagingSenderId: "198586047068",
+      appId: "1:198586047068:web:1020c8c34bcafaae77a499",
+      measurementId: "G-8X8K70G4DC"
+    };
+
+    // --- UI ELEMENTS ---
+    const pauseBtn = document.getElementById('pause-btn');
+    const alertBtn = document.getElementById('alert-btn');
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const mainStatusIcon = document.getElementById('main-status-icon');
+    const mainStatusText = document.getElementById('main-status-text');
+
+    // --- APP STATE ---
+    let isPaused = false;
+    let currentUser = null;
+    let db = null;
+    let deviceDocRef = null;
+
+    // --- ANDROID BRIDGE PLACEHOLDERS ---
+    // The native Android code will update these global variables.
+    window.currentLocation = { lat: 28.9845, lon: 77.7064 }; // Default: Meerut
+    window.currentBattery = { level: 90, charging: true };
+
+    // The native Android code will call this function when a mic check-in is requested.
+    window.onMicCheckInRequested = () => {
+        console.log("Native layer should start recording now.");
+        const micStatus = document.getElementById('status-mic');
+        micStatus.classList.add('bg-red-100', 'border', 'border-red-400');
+        micStatus.querySelector('.status-text').textContent = 'Check-in active...';
+
+        setTimeout(() => {
+           micStatus.classList.remove('bg-red-100', 'border', 'border-red-400');
+           micStatus.querySelector('.status-text').textContent = 'Enabled for Emergencies';
+        }, 10000); // UI reverts after 10 seconds
+    };
+
+    // --- FIREBASE INITIALIZATION ---
+    try {
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        db = getFirestore(app);
+
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                currentUser = user;
+                deviceDocRef = doc(db, "devices", currentUser.uid);
+                document.getElementById('device-id').textContent = currentUser.uid;
+
+                listenForCommands();
+
+                // Start periodic updates
+                updateDeviceStatus();
+                setInterval(updateDeviceStatus, 30000); // Update every 30 seconds
+
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => loadingOverlay.style.display = 'none', 300);
+
+            } else {
+                signInAnonymously(auth).catch(error => {
+                    console.error("Anonymous sign-in failed:", error);
+                    alert("Could not connect to the safety service.");
+                });
+            }
+        });
+
+    } catch (error) {
+        console.error("Firebase initialization failed:", error);
+        alert("Critical Error: Could not initialize Firebase.");
+        loadingOverlay.innerHTML = "<p class='text-red-500 font-bold'>Connection Failed</p>";
+    }
+
+    // --- CORE FUNCTIONS ---
+    async function updateDeviceStatus() {
+        if (!currentUser || !deviceDocRef || isPaused) return;
+
+        // Use the data provided by the native Android wrapper via the bridge.
+        const statusData = {
+            userId: currentUser.uid,
+            isPaused: isPaused,
+            battery: window.currentBattery,
+            location: {
+                latitude: window.currentLocation.lat,
+                longitude: window.currentLocation.lon,
+            },
+            lastSeen: serverTimestamp(),
+            alert: null,
+        };
+
+        try {
+            await setDoc(deviceDocRef, statusData, { merge: true });
+            console.log("Device status updated:", statusData);
+            updateUIBattery(window.currentBattery.level, window.currentBattery.charging);
+        } catch (error) {
+            console.error("Error updating device status:", error);
+        }
+    }
+
+    function listenForCommands() {
+        if(!deviceDocRef) return;
+
+        onSnapshot(deviceDocRef, (doc) => {
+            if (doc.exists()) {
+                const data = doc.data();
+                // Check if a mic check-in was requested and hasn't been handled yet.
+                if (data.micCheckinRequested && data.micCheckinTimestamp) {
+                    console.log("Mic check-in requested by admin!");
+
+                    // Call the function on the bridge for the native code to handle.
+                    if (window.Android && typeof window.Android.startMicCheckIn === 'function') {
+                        window.Android.startMicCheckIn();
+                    } else {
+                        // Fallback for browser testing
+                        window.onMicCheckInRequested();
+                    }
+
+                    // Reset the request in Firestore so it doesn't trigger again.
+                    setDoc(deviceDocRef, { micCheckinRequested: null, micCheckinTimestamp: null }, { merge: true });
+                }
+            }
+        });
+    }
+
+    // --- UI EVENT HANDLERS ---
+    pauseBtn.addEventListener('click', () => {
+        isPaused = !isPaused;
+        updateUIPausedState(isPaused);
+        setDoc(deviceDocRef, { isPaused: isPaused, lastSeen: serverTimestamp() }, { merge: true });
+    });
+
+    alertBtn.addEventListener('click', async () => {
+        if (!deviceDocRef) return;
+        alert("Emergency alert sent to your family group!");
+        await setDoc(deviceDocRef, {
+            alert: {
+                active: true,
+                timestamp: serverTimestamp()
+            }
+        }, { merge: true });
+    });
+
+    // --- UI UPDATE FUNCTIONS ---
+    function updateUIPausedState(paused) {
+         if (paused) {
+            pauseBtn.textContent = 'Resume Sharing';
+            pauseBtn.classList.remove('bg-slate-200', 'hover:bg-slate-300');
+            pauseBtn.classList.add('bg-blue-500', 'hover:bg-blue-600', 'text-white');
+            mainStatusIcon.innerHTML = "<span>⏸️</span>";
+            mainStatusText.textContent = "Sharing is Paused";
+         } else {
+            pauseBtn.textContent = 'Pause Sharing';
+            pauseBtn.classList.add('bg-slate-200', 'hover:bg-slate-300');
+            pauseBtn.classList.remove('bg-blue-500', 'hover:bg-blue-600', 'text-white');
+            mainStatusIcon.innerHTML = "<span>✅</span>";
+            mainStatusText.textContent = "You are Protected";
+            updateDeviceStatus(); // Send an immediate update on resume
+        }
+    }
+
+    function updateUIBattery(level, isCharging) {
+        const batteryStatusTextEl = document.querySelector('#status-battery .status-text');
+        const originalText = `${level}% and ${isCharging ? 'charging' : 'discharging'}`;
+        batteryStatusTextEl.textContent = originalText;
+    }
+</script>
+</body>
+</html>
+
