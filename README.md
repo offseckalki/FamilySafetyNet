@@ -1,8 +1,8 @@
-Family Safety Net
+#Family Safety Net
 
 A personal family security and tracking system designed for consent-based monitoring, emergency awareness, and real-time visibility of connected family devices.
 
-Overview
+##Overview
 
 Family Safety Net is a security-focused platform consisting of:
 
@@ -127,8 +127,8 @@ Push notification system
 Device health monitoring
 Author
 
-Drash Tyagi
-Offensive Security Enthusiast & Developer
+Drash Kumar
+Offensive Security & Development
 
 License
 
